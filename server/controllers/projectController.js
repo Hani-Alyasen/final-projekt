@@ -22,12 +22,14 @@ export const createProject = async (req, res) => {
   }
 };
 
+
 // @desc    Get all projects for user’s team
 export const getProjects = async (req, res) => {
   try {
-    const projects = await Project.find({ team: req.user.team });
+    const projects = await Project.find({ team: req.user.team }).lean();
     res.json(projects);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
