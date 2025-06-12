@@ -1,0 +1,48 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Debugger
+.vscode/
+.idea/
+*.swp
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+
+# Optional npm cache folder
+.npm/
+
+# Build/compiled
+dist/
+build/
+*.tsbuildinfo
+
+# Uploads or temp storage (if added later)
+uploads/
+tmp/
+
+# Database (optional: only if you're storing anything locally)
+*.sqlite
+*.db
+
+# Test artifacts
+jest-test-results.json
+
+# dotenv backup
+.env.backup
