@@ -8,6 +8,8 @@ import taskRoutes from './routes/taskRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import testRoutes from './routes/testRoutes.js'; // Import test routes
+import cors from 'cors';
+
 
 dotenv.config();
 const app = express();
@@ -16,6 +18,7 @@ const app = express();
 connectDB();
 
 // Middlewares
+app.use(cors());
 app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/teams', teamRoutes);
