@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 function Dashboard() {
   const { token } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({
-    title: '',
-    description: '',
-    deadline: '',
+    title: "",
+    description: "",
+    deadline: "",
   });
   // Fetch projects on load
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/projects', {
+        const res = await fetch("http://localhost:5000/api/projects", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -23,7 +23,7 @@ function Dashboard() {
         const data = await res.json();
         setProjects(data);
       } catch (err) {
-        console.error('Error fetching projects:', err);
+        console.error("Error fetching projects:", err);
       } finally {
         setLoading(false);
       }
@@ -32,23 +32,35 @@ function Dashboard() {
   }, [token]);
   // Submit project creation
   const handleCreateProject = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/api/projects', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      setProjects([...projects, data]);
-      setForm({ title: '', description: '', deadline: '' });
-      setShowModal(false);
-    } catch (err) {
-      console.error('Error creating project:', err);
+  console.log('Sending:', form);
+
+  try {
+    const res = await fetch('http://localhost:5000/api/projects', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        ...form,
+        deadline: new Date(form.deadline).toISOString(),
+      }),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Server error: ${errorText}`);
     }
-  };
+
+    const data = await res.json();
+    setProjects([...projects, data]);
+    setForm({ title: '', description: '', deadline: '' });
+    setShowModal(false);
+  } catch (err) {
+    console.error('Error creating project:', err);
+  }
+};
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -66,26 +78,32 @@ function Dashboard() {
         <p>No projects found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projects.map((project) => (
-            <Link
-              key={project._id}
-              to={`/project/${project._id}`}
-              className="border p-4 rounded shadow hover:shadow-md bg-white transition"
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-2 h-2 rounded-full bg-green-500"></span>
-                <h2 className="text-xl font-semibold">{project.title}</h2>
-              </div>
-              <p className="text-sm text-gray-600">{project.description}</p>
-              <p className="text-sm mt-2">
-                <strong>Deadline:</strong>{' '}
-                {new Date(project.deadline).toLocaleDateString()}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Team: {project.team?.name} — {project.team?.members?.length} members
-              </p>
-            </Link>
-          ))}
+          {projects.map(
+            (project) => (
+              console.log("project.deadline →", project.deadline),
+              (
+                <Link
+                  key={project._id}
+                  to={`/project/${project._id}`}
+                  className="border p-4 rounded shadow hover:shadow-md bg-white transition"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                    <h2 className="text-xl font-semibold">{project.title}</h2>
+                  </div>
+                  <p className="text-sm text-gray-600">{project.description}</p>
+                  <p className="text-sm mt-2">
+                    <strong>Deadline:</strong>{" "}
+                    {new Date(project.deadline).toLocaleDateString()}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Team: {project.team?.name} — {project.team?.members?.length}{" "}
+                    members
+                  </p>
+                </Link>
+              )
+            )
+          )}
         </div>
       )}
       {/* Create Project Modal */}
@@ -105,7 +123,9 @@ function Dashboard() {
               placeholder="Description"
               name="description"
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
               className="w-full border p-2 rounded"
             />
             <input
@@ -136,12 +156,3 @@ function Dashboard() {
   );
 }
 export default Dashboard;
-
-
-
-
-
-
-
-
-

@@ -9,6 +9,7 @@ import ProjectPage from "./pages/ProjectPage";
 import TaskPage from "./pages/TaskPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import Layout from "./components/Layout";
+import CreateTeam from "./pages/CreateTeam";
 // Protected route wrapper
 function PrivateRoute({ children }) {
   const { token } = useAuth();
@@ -21,6 +22,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/create-team" element={<CreateTeam />} />
+
         {/* Protected Routes */}
         <Route
           path="/dashboard"

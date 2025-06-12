@@ -1,18 +1,16 @@
 import Team from '../models/Team.js';
 import User from '../models/User.js';
 
-// @desc    Create a team
+// controllers/teamController.js
 export const createTeam = async (req, res) => {
-  const { name } = req.body;
-
   try {
     const team = await Team.create({
-      name,
+      name: req.body.name,
       createdBy: req.user._id,
       members: [req.user._id],
     });
 
-    // Update user's team
+    // Update user’s team reference
     await User.findByIdAndUpdate(req.user._id, { team: team._id });
 
     res.status(201).json(team);
